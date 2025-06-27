@@ -14,7 +14,23 @@ body {
     min-height: 100vh;
 }
 
+#background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 0;
+    background-image: url('../images/to-basemap.png');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    /* filter: grayscale(100%) opacity(0.2); */
+}
+
 .main-content {
+    position: relative;
+    z-index: 1;
     display: block !important;
     flex: 1;
     display: flex;
@@ -111,10 +127,39 @@ a:hover {
 
     text-shadow:
         -0.75px -0.75px 0 black,
-        -0.75px -0.75px 0 black,
-        -0.75px -0.75px 0 black,
          0.75px  0.75px 0 black,
          1px  1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.popup-card {
+    padding: 0.25rem 0;
+}
+
+.popup-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.popup-icon {
+    width: 1.5rem;
+    height: 1.5rem;
+    margin-right: 0.5rem;
+}
+
+.popup-header h4 {
+    font-size: 1.1rem;
+    font-weight: bold;
+    margin: 0;
+    color: #ffffff;
+}
+
+.popup-body {
+    font-size: 0.95rem;
+}
+
+.popup-body p {
+    margin: 0.2rem 0;
 }
 
 .neighbourhood-tooltip {
@@ -123,7 +168,7 @@ a:hover {
     border: 0.5px solid #257A3A;
     color: #fff;
     font-family: 'Urbanist', sans-serif;
-    font-size: 1rem; /* Smaller font size to match typical tooltip usage */
+    font-size: 1rem;
     padding: 5px;
     border-radius: 6px;
     box-shadow: 1px 1px 6px rgba(0, 0, 0, 0.2);
@@ -153,10 +198,22 @@ box-shadow: none !important;
 }
 
 .leaflet-popup-close-button span {
-    color: white;
-    font-size: 2rem;
-    margin: -1rem 0 0 -2rem;
-    padding: 1rem;
+    display: inline-block;
+    color: #1b4e4f;
+    font-size: 1.5rem;
+    font-weight: bold;
+    line-height: 1;
+    background-color: rgba(240, 240, 240, 0.85);
+    border-radius: 50%;
+    padding: 0.4rem 0.6rem;
+    margin: 0.25rem;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+}
+
+.leaflet-popup-close-button span:hover {
+    background-color: rgba(255, 255, 255, 0.25);
 }
 
 .leaflet-control-attribution,
@@ -281,6 +338,7 @@ box-shadow: none !important;
 
 /* Footer styles */
 .footer {
+    z-index: 2;
     color: white;
     font-size: 1.25rem;
 background: linear-gradient(to bottom right,

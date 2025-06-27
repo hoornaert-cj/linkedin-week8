@@ -19,21 +19,30 @@ document.addEventListener("DOMContentLoaded", function () {
         }, 500);
     }
 
-    // Fetch neighbourhood GeoJSON and add it to the map
+    // Loads the GeoJSON file asynchronously.
     fetch('data/to-third-places.geojson')
+        //Converts the fetched response into usable JSON.
         .then(response => response.json())
+        //Starts processing the loaded GeoJSON data.
         .then(data => {
             console.log(data);
 
+            //Verifies that the data is valid GeoJSON.
             if (data && data.type === 'FeatureCollection') {
+                //Sorts features by their rank (ascending).
                 const sorted = data.features.sort((a, b) => a.properties.rank - b.properties.rank);
 
+                //Gets the 5 best-ranked neighbourhoods.
                 top5 = sorted.slice(0, 5);
-                bottom5 = sorted.slice(-5);
+                //Gets the 5 worst-ranked neighbourhoods.
+                bottom5 = sorted.slice(-6);
 
+                //Creates a Leaflet layer from your GeoJSON.
                 geoJsonLayer = L.geoJSON(data, {
+                    //Applies a color and style to each feature.
                     style: function (feature) {
                         return {
+                            //Sets fill color by calling a color function.
                             fillColor: getColor(feature.properties.rank),
                             color: 'white',
                             weight: 1.5,
@@ -41,7 +50,9 @@ document.addEventListener("DOMContentLoaded", function () {
                             fillOpacity: 0.9
                         };
                     },
+                    //Applies events and popups to each neighbourhood.
                     onEachFeature: function (feature, layer) {
+                        //Shows a tooltip on hover.
                         layer.bindTooltip(feature.properties.AREA_NAME + ' (Rank: ' + feature.properties.rank + ')', {
                             permanent: false,
                             direction: "top",
@@ -54,8 +65,10 @@ document.addEventListener("DOMContentLoaded", function () {
                         Rank: ${feature.properties.rank} <br>
                         3rd Places: ${feature.properties["amenity_count"]}`;
 
+                        //Shows a popup on click.
                         layer.bindPopup(popupContent);
 
+                        //Highlights a neighbourhood when hovered.
                         layer.on({
                             mouseover: function (e) {
                                 e.target.setStyle({
@@ -64,13 +77,14 @@ document.addEventListener("DOMContentLoaded", function () {
                                     dashArray: '5, 5'
                                 });
                             },
+                            //Remove the highlight from the neighbourhood that was hovered.
                             mouseout: function (e) {
-                                // Ensure geoJsonLayer is defined before calling resetStyle
                                 if (typeof geoJsonLayer !== 'undefined') {
                                     geoJsonLayer.resetStyle(e.target);
                                 }
                             },
 
+                            // Cosmetic UX improvement—removes default blue border.
                             click: function(e) {
                                 e.target.setStyle({
                                     weight: 0,
@@ -87,7 +101,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     }
                 }).addTo(map);
 
-                // Add event listeners for checkboxes inside the DOMContentLoaded listener
+                //Reacts to checkbox toggle for Top 5.
                 document.getElementById("top5").addEventListener("change", function() {
                     if (this.checked) {
                         addTop5Markers();
@@ -96,6 +110,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     }
                 });
 
+                //Same, but for Bottom 5.
                 document.getElementById("bottom5").addEventListener("change", function() {
                     if (this.checked) {
                         addBottom5Markers();
@@ -103,11 +118,14 @@ document.addEventListener("DOMContentLoaded", function () {
                         removeBottom5Markers();
                     }
                 });
+                //Zooms the map to fit all neighbourhoods.
                 map.fitBounds(geoJsonLayer.getBounds());
+                //Error fallback if the GeoJSON is invalid.
             } else {
                 console.error('Invalid GeoJSON data');
             }
         })
+        //Catches fetch-related errors.
         .catch(error => console.error('Error loading GeoJSON', error));
 });
 

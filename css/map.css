@@ -25,7 +25,6 @@ body {
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
-    /* filter: grayscale(100%) opacity(0.2); */
 }
 
 .main-content {
@@ -239,7 +238,7 @@ box-shadow: none !important;
     display: none;
 }
 
-.station-label {
+/* .station-label {
     position: absolute;
     left: 50%;
     top: -12px;
@@ -271,7 +270,7 @@ box-shadow: none !important;
 
 .station-label.visible {
     opacity: 1;
-}
+} */
 
 
 #loading-overlay {

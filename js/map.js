@@ -35,7 +35,11 @@ document.addEventListener("DOMContentLoaded", function () {
                 //Gets the 5 best-ranked neighbourhoods.
                 top5 = sorted.slice(0, 5);
                 //Gets the 5 worst-ranked neighbourhoods.
-                bottom5 = sorted.slice(-6);
+                const maxRank = Math.max(...data.features.map(f=> f.properties.rank));
+
+                bottom6 = data.features
+                    .filter(f=>f.properties.rank >= maxRank -5)
+                    .map(f=> f.properties.AREA_NAME);
 
                 //Creates a Leaflet layer from your GeoJSON.
                 geoJsonLayer = L.geoJSON(data, {
@@ -59,11 +63,17 @@ document.addEventListener("DOMContentLoaded", function () {
                             className: "neighbourhood-tooltip"
                         });
 
-                        let popupContent =
-                        `<img src="images/maple-leaf.svg" alt="Maple Leaf" style="display: block; margin: 0 auto; width: 1.5rem; height: 1.5rem;">
-                        <strong>${feature.properties.AREA_NAME}</strong><br>
-                        Rank: ${feature.properties.rank} <br>
-                        3rd Places: ${feature.properties["amenity_count"]}`;
+                        let popupContent = `
+<div class="popup-card">
+  <div class="popup-header">
+    <img src="images/maple-leaf.svg" alt="Maple Leaf Icon" class="popup-icon" />
+    <h4>${feature.properties.AREA_NAME}</h4>
+  </div>
+  <div class="popup-body">
+    <p><strong>Rank (out of 158):</strong> ${feature.properties.rank}</p>
+    <p><strong>Number of Third Places:</strong> ${feature.properties["amenity_count"]}</p>
+  </div>
+</div>`;
 
                         //Shows a popup on click.
                         layer.bindPopup(popupContent);
@@ -174,35 +184,34 @@ function getColor(rank) {
         }
     });
 
-    function addBottom5Markers() {
-        bottom5Layer.clearLayers();
-        bottom5.forEach(feature => {
-            let rank = feature.properties.rank;
-            let bottomRank = 159 - rank;
-
-            let centroid = turf.centroid(feature); // Get centroid
-            let coords = centroid.geometry.coordinates; // Extract coordinates
-
-            let icon = L.icon({
-                iconUrl: `images/bottom5-rank${feature.properties.rank}.svg`,
-                iconSize: [36, 36],
-                iconAnchor: [16, 32],
-                popupAnchor: [0, 0]
-            });
-
-
-            let marker = L.marker([coords[1], coords[0]], { icon: icon });
-            bottom5Layer.addLayer(marker);
+    function highlightBottom6() {
+        geoJsonLayer.eachLayer(layer => {
+            const name = layer.feature.properties.AREA_NAME;
+            if(bottom6.includes(name)) {
+                layer.setStyle ({
+                    fillColor: '#8B0000',
+                    color: '#ffffff',
+                    weight: 2,
+                    fillOpacity: 0.9,
+                });
+            }
         });
+    }
 
-        map.addLayer(bottom5Layer);
+    function resetBottom6() {
+        geoJsonLayer.eachLayer(layer => {
+            const name = layer.feature.properties.AREA_NAME;
+            if(bottom6.includes(name)) {
+                geoJsonLayer.resetStyle(layer)
+            }
+        });
     }
 
     // Toggle checkbox behavior
     document.getElementById("bottom5").addEventListener("change", function() {
         if (this.checked) {
-            addBottom5Markers();
+            highlightBottom6();
         } else {
-            map.removeLayer(bottom5Layer);
+            resetBottom6();
         }
     });

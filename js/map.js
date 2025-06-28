@@ -1,6 +1,6 @@
 var map;
 var geoJsonLayer;
-
+var geoJsonLayer;
 
 document.addEventListener("DOMContentLoaded", function () {
     // Initialize the map only once
@@ -26,7 +26,7 @@ document.addEventListener("DOMContentLoaded", function () {
         //Starts processing the loaded GeoJSON data.
         .then(data => {
             console.log(data);
-
+            populateDropdown(data);
             //Verifies that the data is valid GeoJSON.
             if (data && data.type === 'FeatureCollection') {
                 //Sorts features by their rank (ascending).
@@ -139,6 +139,47 @@ document.addEventListener("DOMContentLoaded", function () {
         .catch(error => console.error('Error loading GeoJSON', error));
 });
 
+function populateDropdown(data) {
+    const dropdown = document.getElementById('neighbourhood-dropdown');
+
+    // Sort features alphabetically by AREA_NAME
+    data.features.sort((a, b) =>
+        a.properties.AREA_NAME.localeCompare(b.properties.AREA_NAME)
+    );
+
+    // Create and add an <option> for each feature
+    for (const feature of data.features) {
+        const option = document.createElement('option');
+        option.value = feature.properties._id;
+        option.textContent = feature.properties.AREA_NAME;
+        dropdown.appendChild(option);
+    }
+
+    // Handle dropdown selection change
+    dropdown.addEventListener('change', () => {
+        const selectedId = Number(dropdown.value);
+        if (!isNaN(selectedId)) {
+            const match = data.features.find(
+                f => f.properties._id === selectedId
+            );
+            if (match) zoomToNeighbourhood(match);
+        }
+    });
+}
+
+function zoomToNeighbourhood(selectedNeighbourhood) {
+    if(!geoJsonLayer) {
+        console.error("Neighbourhood layer is not yet loaded.");
+        return
+    }
+    geoJsonLayer.eachLayer(function(layer) {
+          console.log("Comparing", layer.feature.properties._id, selectedNeighbourhood.properties._id);
+        if(layer.feature.properties._id == selectedNeighbourhood.properties._id) {
+            map.fitBounds(layer.getBounds());
+            layer.openPopup();
+        }
+    });
+}
 
 function getColor(rank) {
     return rank <= 20 ? '#1b4e4f' :

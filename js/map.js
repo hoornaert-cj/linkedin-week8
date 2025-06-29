@@ -173,7 +173,6 @@ function zoomToNeighbourhood(selectedNeighbourhood) {
         return
     }
     geoJsonLayer.eachLayer(function(layer) {
-          console.log("Comparing", layer.feature.properties._id, selectedNeighbourhood.properties._id);
         if(layer.feature.properties._id == selectedNeighbourhood.properties._id) {
             map.fitBounds(layer.getBounds());
             layer.openPopup();

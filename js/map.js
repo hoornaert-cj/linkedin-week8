@@ -33,7 +33,7 @@ document.addEventListener("DOMContentLoaded", function() {
 				);
 			}
 
-			div.innerHTML = `<h4>Neighbourhood Rank</h4>` + labels.join('<br>');
+			div.innerHTML = `<h4>Neighbourhood Rank<br><small>(1 = Best)</small></h4>` + labels.join('<br>');
 			return div;
 		};
 
@@ -140,23 +140,6 @@ document.addEventListener("DOMContentLoaded", function() {
 					}
 				}).addTo(map);
 
-				//Reacts to checkbox toggle for Top 5.
-				// document.getElementById("top5").addEventListener("change", function() {
-				//     if (this.checked) {
-				//         addTop5Markers();
-				//     } else {
-				//         removeTop5Markers();
-				//     }
-				// });
-
-				// //Same, but for Bottom 5.
-				// document.getElementById("bottom5").addEventListener("change", function() {
-				//     if (this.checked) {
-				//         addBottom5Markers();
-				//     } else {
-				//         removeBottom5Markers();
-				//     }
-				// });
 				//Zooms the map to fit all neighbourhoods.
 				map.fitBounds(geoJsonLayer.getBounds());
 				//Error fallback if the GeoJSON is invalid.

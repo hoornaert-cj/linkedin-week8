@@ -13,6 +13,7 @@ document.addEventListener("DOMContentLoaded", function() {
 			attribution: '&copy; <a href="https://stadiamaps.com/" target="_blank">Stadia Maps</a> &copy; <a href="https://stamen.com/" target="_blank">Stamen Design</a> &copy; <a href="https://openmaptiles.org/" target="_blank">OpenMapTiles</a> &copy; <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a>',
 		}).addTo(map);
 
+
 		const legend = L.control({
 			position: 'bottomright'
 		});
@@ -38,6 +39,34 @@ document.addEventListener("DOMContentLoaded", function() {
 		};
 
 		legend.addTo(map);
+
+		const resetControl = L.control({ position: 'topleft' }); // You can also try 'topright'
+
+resetControl.onAdd = function () {
+    const div = L.DomUtil.create('div', 'leaflet-bar leaflet-control leaflet-control-custom');
+    div.innerHTML = '🔄';
+    div.style.backgroundColor = 'white';
+    div.style.width = '1.875rem';
+    div.style.height = '1.875rem';
+    div.style.lineHeight = '1.875rem';
+    div.style.textAlign = 'center';
+    div.style.cursor = 'pointer';
+    div.style.fontSize = '1.25rem';
+    div.style.boxShadow = '0 1px 3px rgba(0,0,0,0.3)';
+
+    div.onclick = function () {
+        if (geoJsonLayer) {
+            map.fitBounds(geoJsonLayer.getBounds());
+        } else {
+            map.setView([43.6659, -79.4148], 13);
+        }
+    };
+
+    return div;
+};
+
+resetControl.addTo(map);
+
 
 		// Ensure the map resizes correctly
 		setTimeout(() => {

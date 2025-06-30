@@ -19,11 +19,19 @@
     </div>
      <div id="background"></div>
     <div class ="main-content">
-        <h1>Toronto's Third Places</h1>
+        <h1>Toronto's Third Places
+            <div class="info-wrapper">
+                <span class="info-icon" tabindex="0">ℹ️</span>
+                <div class="info-tooltip">“Third places” are social settings distinct from home and work — such as cafes, libraries, or community centers — where people gather informally and build community.
+                </div>
+            </div>
+        </h1>
+
         <section class="introduction">
             <p>Zoom in to view and click on any neighbourhood. Use the checkbox to display green "Top 5" icons, or red "Bottom 5" icons.</p>
         </section>
         <section class="dropdown-container">
+            <label for="neighbourhood-dropdown" class="visually-hidden">Select a neighbourhood</label>
             <select id="neighbourhood-dropdown" aria-label="Select a neighbourhood">
                     <option value="" disabled selected>Select a neighbourhood</option>
             </select>

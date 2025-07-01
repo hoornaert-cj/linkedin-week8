@@ -131,8 +131,8 @@ resetControl.addTo(map);
   </div>
   <div class="popup-body">
     <p><strong>Rank (out of 158):</strong> ${feature.properties.rank_am_np_1000}</p>
-    <p><strong>Third Places Per 1,000:</strong> ${feature.properties["amen_np_per_1000"]}</p>
-	<p><strong>Third Places Per 1,000 (park included):</strong> ${feature.properties["amen_per_1000"]}</p>
+    <p><strong>3rd Places Per 1,000:</strong> ${feature.properties["amen_np_per_1000"]}</p>
+	<p><strong>3rd Places Per 1,000 (if parks included):</strong> ${feature.properties["amen_per_1000"]}</p>
   </div>
 </div>`;
 

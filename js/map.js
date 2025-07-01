@@ -70,7 +70,6 @@ resetControl.onAdd = function () {
 
 resetControl.addTo(map);
 
-
 		// Ensure the map resizes correctly
 		setTimeout(() => {
 			map.invalidateSize();
@@ -78,7 +77,7 @@ resetControl.addTo(map);
 	}
 
 	// Loads the GeoJSON file asynchronously.
-	fetch('data/to-third-places.geojson')
+	fetch('data/to-third-places_v2.geojson')
 		//Converts the fetched response into usable JSON.
 		.then(response => response.json())
 		//Starts processing the loaded GeoJSON data.
@@ -88,18 +87,18 @@ resetControl.addTo(map);
 			//Verifies that the data is valid GeoJSON.
 			if (data && data.type === 'FeatureCollection') {
 				//Sorts features by their rank (ascending).
-				const sorted = data.features.sort((a, b) => a.properties.rank - b.properties.rank);
+				const sorted = data.features.sort((a, b) => a.properties.rank_am_np_1000 - b.properties.rank_am_np_1000);
 
 				//Gets the 5 best-ranked neighbourhoods.
 				top5 = sorted.slice(0, 5);
 				//Gets the 5 worst-ranked neighbourhoods.
-				const maxRank = Math.max(...data.features.map(f => f.properties.rank));
+				const maxRank = Math.max(...data.features.map(f => f.properties.rank_am_np_1000));
 				top5 = data.features
-					.sort((a, b) => a.properties.rank - b.properties.rank)
+					.sort((a, b) => a.properties.rank_am_np_1000 - b.properties.rank_am_np_1000)
 					.slice(0, 5)
 					.map(f => f.properties.AREA_NAME);
 				bottom6 = data.features
-					.filter(f => f.properties.rank >= maxRank - 5)
+					.filter(f => f.properties.rank_am_np_1000 >= maxRank - 5)
 					.map(f => f.properties.AREA_NAME);
 
 				//Creates a Leaflet layer from your GeoJSON.
@@ -108,7 +107,7 @@ resetControl.addTo(map);
 					style: function(feature) {
 						return {
 							//Sets fill color by calling a color function.
-							fillColor: getColor(feature.properties.rank),
+							fillColor: getColor(feature.properties.rank_am_np_1000),
 							color: 'white',
 							weight: 1.5,
 							opacity: 1,
@@ -118,7 +117,7 @@ resetControl.addTo(map);
 					//Applies events and popups to each neighbourhood.
 					onEachFeature: function(feature, layer) {
 						//Shows a tooltip on hover.
-						layer.bindTooltip(feature.properties.AREA_NAME + ' (Rank: ' + feature.properties.rank + ')', {
+						layer.bindTooltip(feature.properties.AREA_NAME + ' (Rank: ' + feature.properties.rank_am_np_1000 + ')', {
 							permanent: false,
 							direction: "top",
 							className: "neighbourhood-tooltip"
@@ -131,8 +130,9 @@ resetControl.addTo(map);
     <h4>${feature.properties.AREA_NAME}</h4>
   </div>
   <div class="popup-body">
-    <p><strong>Rank (out of 158):</strong> ${feature.properties.rank}</p>
-    <p><strong>Number of Third Places:</strong> ${feature.properties["amenity_count"]}</p>
+    <p><strong>Rank (out of 158):</strong> ${feature.properties.rank_am_np_1000}</p>
+    <p><strong>Third Places Per 1,000:</strong> ${feature.properties["amen_np_per_1000"]}</p>
+	<p><strong>Third Places Per 1,000 (park included):</strong> ${feature.properties["amen_per_1000"]}</p>
   </div>
 </div>`;
 

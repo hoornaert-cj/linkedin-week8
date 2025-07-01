@@ -53,6 +53,9 @@ resetControl.onAdd = function () {
     div.style.cursor = 'pointer';
     div.style.fontSize = '1.25rem';
     div.style.boxShadow = '0 1px 3px rgba(0,0,0,0.3)';
+	div.setAttribute('aria-label', 'Reset View');
+	div.setAttribute('role', 'button');
+	div.setAttribute('tabindex', '0');
 
     div.onclick = function () {
         if (geoJsonLayer) {

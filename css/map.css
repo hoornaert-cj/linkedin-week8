@@ -336,6 +336,7 @@ box-shadow: none !important;
 
 
     .leaflet-popup-content-wrapper {
+        max-width: 80%;
         font-size: 0.8rem;
         padding: 0;
     }

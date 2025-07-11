@@ -78,10 +78,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
     resetControl.addTo(map);
 
-    // Ensure the map resizes correctly
-    setTimeout(() => {
-      map.invalidateSize();
-    }, 500);
   }
 
   // Loads the GeoJSON file asynchronously.
@@ -213,7 +209,11 @@ document.addEventListener("DOMContentLoaded", function () {
         }).addTo(map);
 
         //Zooms the map to fit all neighbourhoods.
-        map.fitBounds(geoJsonLayer.getBounds());
+        geoJsonLayer.once('add', function () {
+			const bounds = geoJsonLayer.getBounds();
+    console.log('Bounds:', bounds);
+    		map.fitBounds(geoJsonLayer.getBounds());
+			});
         //Error fallback if the GeoJSON is invalid.
       } else {
         console.error("Invalid GeoJSON data");
